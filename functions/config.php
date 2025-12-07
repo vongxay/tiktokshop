@@ -3,7 +3,7 @@
         $dbhost = 'localhost';
         $dbuser = 'root';
         $dbpass = '';
-        $dbname = 'tkshop';
+        $dbname = 'kshop';
         $db = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
         // ຕັ້ງໃຫ້ອ່ານພາສາລາວໄດ້
         $db->exec("set names utf8mb4");

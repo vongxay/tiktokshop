@@ -1,0 +1,19 @@
+{
+    auto_https off
+    admin off
+}
+
+:{$PORT:8080} {
+    root * /app
+    
+    php_server
+    
+    file_server
+    
+    # Hide sensitive files
+    @hidden {
+        path */.env*
+        path */Caddyfile
+    }
+    respond @hidden 404
+}

@@ -1,11 +1,11 @@
 <?php
     function connect(){
-        // ใช้ Environment Variables จาก Railway
-        $dbhost = getenv('MARIADB_HOST') ?: getenv('MYSQLHOST') ?: 'localhost';
-        $dbuser = getenv('MARIADB_USER') ?: getenv('MYSQLUSER') ?: 'root';
-        $dbpass = getenv('MARIADB_PASSWORD') ?: getenv('MYSQLPASSWORD') ?: '';
-        $dbname = getenv('MARIADB_DATABASE') ?: getenv('MYSQLDATABASE') ?: 'railway';
-        $dbport = getenv('MARIADB_PORT') ?: getenv('MYSQLPORT') ?: '3306';
+        // ใช้ Public URL สำหรับ Railway MariaDB
+        $dbhost = getenv('MARIADB_PUBLIC_HOST') ?: getenv('MARIADB_HOST') ?: 'shuttle.proxy.rlwy.net';
+        $dbport = getenv('MARIADB_PUBLIC_PORT') ?: getenv('MARIADB_PORT') ?: '24272';
+        $dbuser = getenv('MARIADB_USER') ?: 'railway';
+        $dbpass = getenv('MARIADB_PASSWORD') ?: '';
+        $dbname = getenv('MARIADB_DATABASE') ?: 'railway';
         
         try {
             $db = new PDO("mysql:host=$dbhost;port=$dbport;dbname=$dbname", $dbuser, $dbpass);

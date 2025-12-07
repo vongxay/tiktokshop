@@ -10,8 +10,8 @@ ini_set('post_max_size', '10M');
 ini_set('max_input_time', 300);
 ini_set('max_execution_time', 300);
 
-require_once('db.php');
-require_once('function.php');
+require_once(__DIR__ . '/db.php');
+require_once(__DIR__ . '/function.php');
 
 // ใช้ environment variable หรือ detect จาก request
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';

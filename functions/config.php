@@ -1,20 +1,24 @@
 <?php
     function connect(){
-        // ใช้ Environment Variables จาก Railway
-        $dbhost = getenv('MARIADB_HOST') ?: getenv('MYSQLHOST') ?: 'localhost';
-        $dbuser = getenv('MARIADB_USER') ?: getenv('MYSQLUSER') ?: 'root';
-        $dbpass = getenv('MARIADB_PASSWORD') ?: getenv('MYSQLPASSWORD') ?: '';
-        $dbname = getenv('MARIADB_DATABASE') ?: getenv('MYSQLDATABASE') ?: 'railway';
-        $dbport = getenv('MARIADB_PORT') ?: getenv('MYSQLPORT') ?: '3306';
+        // ใช้ค่าจาก Environment Variables (Railway) หรือค่า default
+        $dbhost = getenv('MARIADB_PUBLIC_HOST') ?: getenv('MARIADB_HOST') ?: 'localhost';
+        $dbport = getenv('MARIADB_PUBLIC_PORT') ?: getenv('MARIADB_PORT') ?: '3306';
+        $dbuser = getenv('MARIADB_USER') ?: 'root';
+        $dbpass = getenv('MARIADB_PASSWORD') ?: '';
+        $dbname = getenv('MARIADB_DATABASE') ?: 'railway';
         
-        $db = new PDO("mysql:host=$dbhost;port=$dbport;dbname=$dbname", $dbuser, $dbpass);
-        // ຕັ້ງໃຫ້ອ່ານພາສາລາວໄດ້
-        $db->exec("set names utf8mb4");
-        // ຕັ້ງຄ່າໃຫ້ມັນຟ້ອງ Error ໃຫ້ໃນເວລາທີ່ເຮົາຂຽນຜິດ
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        // ສົ່ງຄ່າຂອງຕົວເຊື່ອມຕໍ່ຖານຂໍ້ມູນກັບ
-        return $db;
-
+        try {
+            $db = new PDO("mysql:host=$dbhost;port=$dbport;dbname=$dbname", $dbuser, $dbpass);
+            // ตั้งให้อ่านภาษาไทยได้
+            $db->exec("set names utf8mb4");
+            // ตั้งค่าให้แสดง Error
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $db;
+        } catch (PDOException $e) {
+            // Log error แต่ไม่แสดงรายละเอียดให้ user
+            error_log("Database connection failed: " . $e->getMessage());
+            die("ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง");
+        }
     }
 
 ?>

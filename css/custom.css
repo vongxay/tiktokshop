@@ -1,0 +1,272 @@
+ 
+ @font-face {
+  font-family: myFirstFont;
+  src: url(../font/ff.ttf);
+  }
+
+ 
+ /* General styles */
+ *{
+    padding: 0px;
+    margin: 0px;
+    
+}
+a{
+    text-decoration: none;
+}
+
+body {
+  font-family: myFirstFont;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  
+}
+
+/* ปรับขนาด font และ layout สำหรับหน้าจอมือถือ */
+@media (max-width: 768px) {
+  body {
+    /* font-size: 14px; */
+    padding: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    /* font-size: 12px; */
+    padding: 2px;
+   
+  }
+}
+
+
+.service{
+  text-align: left;
+  padding: 20px 0;
+  border-top: 1px solid #ddd;
+  position: relative;
+  background-color: #f4f4f4;
+  display: flex;
+  text-align: center;
+  
+}
+.icon{
+    border-radius: 100px;
+    margin: 5px;
+}
+/* Header styles */
+header {
+  position: fixed;
+  background-color: #f4f4f4;
+  padding: 10px 20px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  z-index: 1000; /* ให้อยู่เหนือเนื้อหาอื่น */
+  width: 100%; /* ให้เมนูขยายเต็มความกว้างหน้าจอ */
+ 
+}
+
+header h1 {
+  margin: 0;
+  color: #444;
+}
+
+header nav a {
+  margin: 0 10px;
+  text-decoration: none;
+ 
+
+}
+
+header nav a:hover {
+  text-decoration: underline;
+}
+
+/* Main content */
+main {
+  padding: 10px;
+  flex: 1; /* ดัน Footer ให้อยู่ด้านล่างโดยใช้พื้นที่ที่เหลือ */
+}
+
+#products h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Product list */
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* จัด 3 คอลัมน์ต่อแถว */
+  gap: 20px; /* ระยะห่างระหว่างสินค้า */
+  justify-content: center; /* จัดให้อยู่กลางหน้าจอ */
+ 
+}
+
+.product {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: auto;
+  text-align: center;
+  width: 100%; /* ขยายเต็มคอลัมน์ที่กำหนด */
+}
+
+.product img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.product h3 {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+.product p {
+  font-size: 1em;
+  color: #3b3a3a;
+  margin-top: 5px;
+  margin-bottom: -2px;
+}
+
+.product .price{
+    color:#343333;
+    font-weight: bolder;
+    margin-bottom: 5px;
+    /* margin-top: -2px; */
+}
+/* Footer styles */
+/* Footer styles */
+footer {
+  background-color: #f4f4f4;
+  text-align: center;
+  padding: 20px 0;
+  border-top: 1px solid #ddd;
+  position: relative;
+  
+  
+}
+
+.footer-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%; /* ให้เมนูขยายเต็มความกว้างหน้าจอ */
+  background-color: #f4f4f4;
+  padding: 10px 0;
+  text-align: center;
+  border-top: 1px solid #ddd;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* ให้อยู่เหนือเนื้อหาอื่น */
+  font-size: 20px;
+  display: flex;
+  justify-content: space-around;
+  height: auto;
+ 
+  
+}
+
+.footer-nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color:#333;
+  font-size: 1em;
+
+}
+
+.footer-nav a:hover {
+  text-decoration: none;
+
+}
+
+
+
+.container {
+        width: 100%;
+     
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-align: center
+    }
+
+    .logo {
+        width: 80px;
+        height: auto;
+        margin-bottom: 20px;
+        border-radius: 50%;
+    }
+
+    .tab {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .tab span {
+        font-size: 1em;
+        color: #888;
+        cursor: pointer;
+    }
+
+    .tab .active {
+        color: #f44336;
+        font-weight: bold;
+        border-bottom: 2px solid #f44336;
+    }
+
+    form {
+        width: 100%;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .input-select,
+    form input {
+        width: 100%;
+        padding: 10px;
+        font-size: 1em;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        font-size: 1em;
+        margin: 10px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-login {
+        background-color: #f44336;
+        color: #fff;
+    }
+
+    .links {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        font-size: 0.9em;
+    }
+
+    .links a {
+        color: #f44336;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .links a:hover {
+        text-decoration: underline;
+    }

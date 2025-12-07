@@ -1,0 +1,23 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# SQL dumps
+*.sql
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Composer
+/vendor/
+
+# Uploads (optional - remove if you want to track uploads)
+# /uploads/

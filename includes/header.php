@@ -1,38 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php
-include_once('functions/init.php');
+/**
+ * Header - ต้องเรียก session_start() ก่อน output ใดๆ
+ */
 session_start();
 error_reporting(0);
 
+include_once('functions/init.php');
 include_once('includes/lang.php'); 
 
-// 2. ตรวจสอบว่ามีการส่งค่า 'lang' มาจาก URL หรือไม่ และเปลี่ยนภาษาใน SESSION
-if (isset($_REQUEST['lang'])) { // ใช้ REQUEST เพื่อรองรับทั้ง GET และ POST
+// ตรวจสอบและเปลี่ยนภาษา
+if (isset($_REQUEST['lang'])) {
     $selected_lang = strtolower($_REQUEST['lang']);
-    // ตรวจสอบว่าภาษาที่ส่งมามีอยู่ใน $lang array หรือไม่
     if (isset($lang[$selected_lang])) {
         $_SESSION['lang'] = $selected_lang;
     }
-    // **(ทางเลือก) หากเปลี่ยนภาษาสำเร็จ อาจใช้ header() redirect 
-    // เพื่อล้างค่า ?lang ออกจาก URL เพื่อความเป็นระเบียบ**
-    // header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
-    // exit;
 }
 
-// 3. กำหนดภาษาปัจจุบัน: ใช้จาก SESSION ถ้ามี, ถ้าไม่มีให้ใช้ 'th' เป็นค่าเริ่มต้น
-// PHP 7.0 ขึ้นไป ใช้ Null Coalescing Operator (??)
+// กำหนดภาษาปัจจุบัน
 $current_lang = $_SESSION['lang'] ?? 'th';
-
-// 4. สร้างตัวแปร $T เพื่อความสะดวกในการเรียกใช้ข้อความทั่วทั้งระบบ
-// ตรวจสอบความปลอดภัยอีกครั้งเผื่อค่าใน Session ผิดพลาด
 if (!isset($lang[$current_lang])) {
-    $current_lang = 'th'; // ใช้ค่าเริ่มต้น
+    $current_lang = 'th';
 }
-
 $T = $lang[$current_lang];
 ?>
-
+<!DOCTYPE html>
+<html lang="<?php echo $current_lang; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

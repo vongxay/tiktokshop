@@ -10,8 +10,8 @@ ini_set('post_max_size', '10M');
 ini_set('max_input_time', 300);
 ini_set('max_execution_time', 300);
 
-require_once(__DIR__ . '/config.php');
-require_once(__DIR__ . '/function.php');
+require_once('db.php');
+require_once('function.php');
 
 define('SITE_URL', 'https://www.tkshop.wuaze.com/');
 define('ASSET_ROOT',

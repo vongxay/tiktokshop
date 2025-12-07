@@ -1,4 +1,7 @@
 <?php
+// Include database config first
+require_once(__DIR__ . '/config.php');
+
 function generateProId() {
 	$id = 'E-';
 	if (!empty(checkProId())) {

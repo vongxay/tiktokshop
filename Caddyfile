@@ -1,19 +1,11 @@
 {
+    order php_server before file_server
     auto_https off
     admin off
 }
 
 :{$PORT:8080} {
     root * /app
-    
+    encode gzip
     php_server
-    
-    file_server
-    
-    # Hide sensitive files
-    @hidden {
-        path */.env*
-        path */Caddyfile
-    }
-    respond @hidden 404
 }

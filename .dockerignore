@@ -1,0 +1,10 @@
+.git
+.gitignore
+.env
+*.sql
+*.md
+.DS_Store
+node_modules
+nixpacks.toml
+Dockerfile
+.dockerignore

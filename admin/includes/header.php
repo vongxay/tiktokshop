@@ -125,25 +125,23 @@ error_reporting(0);
 </svg>
 <main>
 <?php 
+// ตรวจสอบ expiration - ยกเว้นหน้า expiration และ login
+$current_page = $_REQUEST['page'] ?? '';
+$skip_expiration_check = in_array($current_page, ['expiration', 'login', 'logout']);
 
-$db = connect();
-$stmt = $db->query("SELECT * FROM tb_settings LIMIT 1");
-$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-foreach($result as $row){
-if($result){
-  $expiration_date = $row['expiration_date'];
-  $current_date = date('Y-m-d');
-  if($current_date > $expiration_date){
-    echo '
-    <script type="text/javascript">
-      setTimeout(function() {
-        location.href = "?page=expiration";
-      }, 1000);
-    </script>
-  ';
-  }else{
-    // echo "Yes";
-  }
-}
+if (!$skip_expiration_check) {
+    $db = connect();
+    $stmt = $db->query("SELECT * FROM tb_settings LIMIT 1");
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($row) {
+        $expiration_date = $row['expiration_date'];
+        $current_date = date('Y-m-d');
+        
+        if ($current_date > $expiration_date) {
+            echo '<script>location.href = "?page=expiration";</script>';
+            exit;
+        }
+    }
 }
 ?>

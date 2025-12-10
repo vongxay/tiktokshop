@@ -64,9 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute(['user_id' => $user_id]);
         $messageCount = $stmt->fetchColumn();
 
-        // แทรกข้อความของลูกค้า
-        $stmt = $db->prepare("INSERT INTO tb_messages (user_id, sender_id, receiver_id, type, message, file_name)
-                            VALUES (:user_id, :sender_id, :receiver_id, :type, :message, :file_name)");
+        // แทรกข้อความของลูกค้า (status = 0 คือยังไม่อ่าน)
+        $stmt = $db->prepare("INSERT INTO tb_messages (user_id, sender_id, receiver_id, type, message, file_name, status)
+                            VALUES (:user_id, :sender_id, :receiver_id, :type, :message, :file_name, 0)");
         $stmt->execute([
             'user_id' => $user_id,
             'sender_id' => $sender_id,
@@ -78,9 +78,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         echo json_encode(['success' => true, 'message' => 'Message sent!']);
     } else {
+        // กรณีส่งแค่ข้อความ (ไม่มีไฟล์)
+        $db = connect();
+        if (!$db) {
+            die("Database connection failed.");
+        }
 
-
-        $stmt = $db->prepare("INSERT INTO tb_messages (user_id, sender_id, receiver_id, message) VALUES (:user_id, :sender_id, :receiver_id, :message)");
+        $stmt = $db->prepare("INSERT INTO tb_messages (user_id, sender_id, receiver_id, message, status) VALUES (:user_id, :sender_id, :receiver_id, :message, 0)");
         $stmt->execute([
             'user_id' => $user_id,
             'sender_id' => $sender_id,

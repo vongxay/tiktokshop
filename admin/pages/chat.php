@@ -172,6 +172,56 @@ if ($profile['statust_log'] != 1) {
         padding-left: 35px; /* เพิ่มช่องว่างด้านซ้าย */
         padding-right: 15px; /* ล้างค่า padding-right ที่เพิ่มไว้ก่อนหน้า */
     }
+
+    /* ไอคอนคนแทนรูปโปรไฟล์ */
+    .chat-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 8px;
+        vertical-align: middle;
+        border: 2px solid #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .chat-avatar-icon {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 16px;
+        margin-right: 8px;
+        vertical-align: middle;
+        border: 2px solid #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .chat-avatar-icon i {
+        font-size: 16px;
+        line-height: 1;
+    }
+
+    /* สถานะอ่านข้อความ */
+    .read-status {
+        display: inline-block;
+        margin-left: 8px;
+        font-size: 14px;
+    }
+
+    .read-status.unread {
+        color: #999;  /* สีเทา - ยังไม่อ่าน */
+    }
+
+    .read-status.read {
+        color: #00a8ff;  /* สีฟ้า - อ่านแล้ว */
+    }
 </style>
 
 <div class="chat-container">
@@ -217,6 +267,12 @@ if ($profile['statust_log'] != 1) {
                 // ตรวจสอบว่าเป็นข้อความของแอดมิน (userId) หรือไม่
                 messageDiv.className = 'message ' + (msg.sender_id == userId ? 'me' : 'other');
 
+                // แสดงไอคอนคนถ้าไม่มีรูปโปรไฟล์
+                const hasAvatar = msg.img_name && msg.img_name.trim() !== '' && msg.img_name !== 'null';
+                const avatarHTML = hasAvatar 
+                    ? `<img src="../uploads/profile/${msg.img_name}" alt="" class="chat-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'"><span class="chat-avatar-icon" style="display:none"><i class="bi bi-person-fill"></i></span>` 
+                    : `<span class="chat-avatar-icon"><i class="bi bi-person-fill"></i></span>`;
+
                 let contentHTML = '';
 
                 // ⭐ แก้ไขตรงนี้: ใช้ msg.id เพื่อส่ง ID ข้อความที่ถูกต้อง
@@ -224,12 +280,22 @@ if ($profile['statust_log'] != 1) {
                     contentHTML += `<span class="delete-btn" onclick="deleteMessage(${msg.message_id})">🗑️</span>`;
                 }
 
+                // ติ๊กสถานะอ่าน (สำหรับข้อความที่เราส่ง)
+                let readStatusHTML = '';
+                if (msg.sender_id == userId) {
+                    if (msg.status == 1) {
+                        readStatusHTML = `<span class="read-status read"><i class="bi bi-check2-all"></i></span>`;
+                    } else {
+                        readStatusHTML = `<span class="read-status unread"><i class="bi bi-check2"></i></span>`;
+                    }
+                }
+
                 // ... (โค้ดแสดงผลข้อความเดิม) ...
                 if (msg.type === 'text') {
                     contentHTML += `
-                    <strong>${msg.username}</strong>: <small>${msg.customer_id}</small>
+                    ${avatarHTML}<strong>${msg.username}</strong>: <small>${msg.customer_id}</small>
                     <div>${msg.message}</div>
-                    <small>${new Date(msg.timestamp).toLocaleTimeString('th-TH')}</small>
+                    <small>${new Date(msg.timestamp).toLocaleTimeString('th-TH')}</small>${readStatusHTML}
                 `;
                 } else if (msg.type === 'file') {
                     // ตรวจสอบว่าเป็นรูปภาพหรือ PDF เพื่อแสดงผล
@@ -239,11 +305,11 @@ if ($profile['statust_log'] != 1) {
                         `<p><a href="../uploads/chat/${msg.file_name}" target="_blank">📥 ${msg.file_name} (PDF)</a></p>`;
 
                     contentHTML += `
-                    <strong>${msg.username}</strong></strong>: <small>${msg.customer_id}</small>
+                    ${avatarHTML}<strong>${msg.username}</strong>: <small>${msg.customer_id}</small>
                     <div>
                         ${fileDisplay}
                         <div style="color: #000; font-size:16px">${msg.message}</div>
-                        <small>${new Date(msg.timestamp).toLocaleTimeString('th-TH')}</small>
+                        <small>${new Date(msg.timestamp).toLocaleTimeString('th-TH')}</small>${readStatusHTML}
                     </div>
                 `;
                 }

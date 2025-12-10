@@ -60,9 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
   
-        // แทรกข้อความของลูกค้า
-        $stmt = $db->prepare("INSERT INTO tb_messages (user_id, sender_id, receiver_id, type, message, file_name)
-                            VALUES (:user_id, :sender_id, :receiver_id, :type, :message, :file_name)");
+        // แทรกข้อความ (status = 0 คือยังไม่อ่าน)
+        $stmt = $db->prepare("INSERT INTO tb_messages (user_id, sender_id, receiver_id, type, message, file_name, status)
+                            VALUES (:user_id, :sender_id, :receiver_id, :type, :message, :file_name, 0)");
         $stmt->execute([
             'user_id' => $user_id,
             'sender_id' => $sender_id,
@@ -74,15 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         echo json_encode(['success' => true, 'message' => 'Message sent!']);
     }else{
-    // บันทึกข้อความลงฐานข้อมูล
-    $stmt = $db->prepare("INSERT INTO tb_messages (user_id, sender_id, receiver_id, message) VALUES (:user_id, :sender_id, :receiver_id, :message)");
+    // บันทึกข้อความลงฐานข้อมูล (status = 0 หมายถึงยังไม่อ่าน)
+    $stmt = $db->prepare("INSERT INTO tb_messages (user_id, sender_id, receiver_id, message, status) VALUES (:user_id, :sender_id, :receiver_id, :message, 0)");
     $stmt->execute(['user_id' => $user_id, 'sender_id' => $sender_id, 'receiver_id' => $receiver_id, 'message' => $message]);
+    echo json_encode(['success' => true, 'message' => 'Message sent!']);
     }
-    $stmt = $db->prepare("UPDATE tb_messages SET status = :status WHERE user_id = $u_id");
-    $stmt->bindParam("status", $status);;
-    // $stmt->bindParam("user_id", $receiver_id);
-    if ($stmt->execute()) {
-    echo "Message sent!";
-     }
 }
 ?>

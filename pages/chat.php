@@ -62,11 +62,16 @@ $receiver_id = $_GET['user'];
                     const messageDiv = document.createElement('div');
                     messageDiv.className = 'message ' + (msg.sender_id == userId ? 'me' : 'other');
 
+                    // แสดงไอคอนคนถ้าไม่มีรูปโปรไฟล์
+                    const hasAvatar = msg.img_name && msg.img_name.trim() !== '' && msg.img_name !== 'null';
+                    const avatarHTML = hasAvatar 
+                        ? `<img src="uploads/profile/${msg.img_name}" alt="" class="chat-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="chat-avatar-icon" style="display:none"><i class="bi bi-person-fill"></i></div>` 
+                        : `<div class="chat-avatar-icon"><i class="bi bi-person-fill"></i></div>`;
+
                     const profileHTML = `
                         <div class="chat-header">
-                            <img src="uploads/profile/${msg.img_name || 'logo02.png'}" 
-                                 alt="" class="chat-avatar">
-                            <span class="chat-username">${msg.username || msg.username}</span>
+                            ${avatarHTML}
+                            <span class="chat-username">${msg.username || 'User'}</span>
                         </div>`;
 
                     let messageContent = '';
@@ -82,7 +87,19 @@ $receiver_id = $_GET['user'];
                             </div>`;
                     }
 
-                    messageDiv.innerHTML = profileHTML + messageContent;
+                    // แสดงติ๊กสำหรับข้อความที่เราส่ง (สีฟ้าถ้าอ่านแล้ว)
+                    let readStatusHTML = '';
+                    if (msg.sender_id == userId) {
+                        if (msg.status == 1) {
+                            // อ่านแล้ว - ติ๊กสีฟ้า
+                            readStatusHTML = `<span class="read-status read"><i class="bi bi-check2-all"></i></span>`;
+                        } else {
+                            // ยังไม่อ่าน - ติ๊กเทา
+                            readStatusHTML = `<span class="read-status unread"><i class="bi bi-check2"></i></span>`;
+                        }
+                    }
+
+                    messageDiv.innerHTML = profileHTML + messageContent + readStatusHTML;
                     messagesContainer.appendChild(messageDiv);
                 });
 
@@ -359,11 +376,61 @@ $receiver_id = $_GET['user'];
         width: 100%;
         height: fit-content;
         background: none;
-
-
     }
 
+    /* หัวข้อแชท (รูป + ชื่อ) */
+    .chat-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
 
+    .chat-username {
+        font-weight: bold;
+        font-size: 14px;
+        margin-left: 8px;
+    }
 
+    /* ไอคอนคนแทนรูปโปรไฟล์ */
+    .chat-avatar-icon {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        border: 2px solid #fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .chat-avatar-icon i {
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    /* สถานะอ่านข้อความ */
+    .read-status {
+        display: block;
+        text-align: right;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .read-status.unread {
+        color: #999;  /* สีเทา - ยังไม่อ่าน */
+    }
+
+    .read-status.read {
+        color: #00a8ff;  /* สีฟ้า - อ่านแล้ว */
+    }
+
+    .read-status i {
+        font-size: 16px;
+    }
 
 </style>

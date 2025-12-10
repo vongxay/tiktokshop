@@ -23,6 +23,7 @@ if ($user_id > 0 && $receiver_id > 0) {
             m.timestamp,
             m.sender_id,
             m.receiver_id,
+            m.status,
             u.username,
             u.fname,
             u.img_name
@@ -39,6 +40,16 @@ if ($user_id > 0 && $receiver_id > 0) {
     $stmt->execute();
 
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // อัพเดทสถานะเป็น "อ่านแล้ว" สำหรับข้อความที่ส่งมาหาเรา
+    $updateStmt = $db->prepare("
+        UPDATE tb_messages 
+        SET status = 1 
+        WHERE receiver_id = :user_id AND sender_id = :receiver_id AND status = 0
+    ");
+    $updateStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $updateStmt->bindParam(':receiver_id', $receiver_id, PDO::PARAM_INT);
+    $updateStmt->execute();
 
     header('Content-Type: application/json');
     echo json_encode($messages);

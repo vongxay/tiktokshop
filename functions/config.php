@@ -1,22 +1,17 @@
 <?php
     function connect(){
-        // ใช้ Public URL สำหรับ Railway MariaDB
-        $dbhost = getenv('MARIADB_PUBLIC_HOST') ?: getenv('MARIADB_HOST') ?: 'shuttle.proxy.rlwy.net';
-        $dbport = getenv('MARIADB_PUBLIC_PORT') ?: getenv('MARIADB_PORT') ?: '24272';
-        $dbuser = getenv('MARIADB_USER') ?: 'railway';
-        $dbpass = getenv('MARIADB_PASSWORD') ?: '';
-        $dbname = getenv('MARIADB_DATABASE') ?: 'railway';
-        
-        try {
-            $db = new PDO("mysql:host=$dbhost;port=$dbport;dbname=$dbname", $dbuser, $dbpass);
-            // ตั้งให้อ่านภาษาไทยได้
-            $db->exec("set names utf8mb4");
-            // ตั้งค่าให้แจ้ง Error
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $db;
-        } catch (PDOException $e) {
-            die("Database connection failed: " . $e->getMessage());
-        }
+        $dbhost = 'sql103.infinityfree.com';
+        $dbuser = 'if0_40647466';
+        $dbpass = 'DkBV3VVPv631X';
+        $dbname = 'if0_40647466_db_tkshop';
+        $db = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
+        // ຕັ້ງໃຫ້ອ່ານພາສາລາວໄດ້
+        $db->exec("set names utf8mb4");
+        // ຕັ້ງຄ່າໃຫ້ມັນຟ້ອງ Error ໃຫ້ໃນເວລາທີ່ເຮົາຂຽນຜິດ
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        // ສົ່ງຄ່າຂອງຕົວເຊື່ອມຕໍ່ຖານຂໍ້ມູນກັບ
+        return $db;
+
     }
 
 ?>

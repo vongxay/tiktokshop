@@ -203,6 +203,16 @@ if ($profile['statust_log'] != 1) {
         box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
 
+    /* ไอคอน Admin - สีแดง/ส้ม */
+    .chat-avatar-icon.admin {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    }
+
+    /* ไอคอน User - สีม่วง */
+    .chat-avatar-icon.user {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
     .chat-avatar-icon i {
         font-size: 16px;
         line-height: 1;
@@ -246,6 +256,8 @@ if ($profile['statust_log'] != 1) {
 <script>
     const userId = <?php echo json_encode($_SESSION['user_id']); ?>;
     const messagesContainer = document.getElementById('messages');
+    let lastMessageCount = 0;
+    let lastMessageId = 0;
 
     function isScrolledToBottom() {
         return messagesContainer.scrollHeight - messagesContainer.scrollTop <= messagesContainer.clientHeight + 10;
@@ -259,6 +271,14 @@ if ($profile['statust_log'] != 1) {
             const response = await fetch('get_messages.php');
             const data = await response.json();
 
+            // ตรวจสอบว่ามีข้อความใหม่หรือไม่
+            const newLastId = data.length > 0 ? data[data.length - 1].message_id : 0;
+            if (data.length === lastMessageCount && newLastId === lastMessageId) {
+                return; // ไม่มีอะไรเปลี่ยน ไม่ต้อง render ใหม่
+            }
+            lastMessageCount = data.length;
+            lastMessageId = newLastId;
+
             const wasScrolledToBottom = isScrolledToBottom();
 
             messagesContainer.innerHTML = '';
@@ -267,11 +287,13 @@ if ($profile['statust_log'] != 1) {
                 // ตรวจสอบว่าเป็นข้อความของแอดมิน (userId) หรือไม่
                 messageDiv.className = 'message ' + (msg.sender_id == userId ? 'me' : 'other');
 
-                // แสดงไอคอนคนถ้าไม่มีรูปโปรไฟล์
+                // แสดงไอคอนคนถ้าไม่มีรูปโปรไฟล์ (สีต่างกันระหว่าง admin และ user)
                 const hasAvatar = msg.img_name && msg.img_name.trim() !== '' && msg.img_name !== 'null';
+                const isAdmin = msg.sender_id == userId;
+                const iconClass = isAdmin ? 'admin' : 'user';
                 const avatarHTML = hasAvatar 
-                    ? `<img src="../uploads/profile/${msg.img_name}" alt="" class="chat-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'"><span class="chat-avatar-icon" style="display:none"><i class="bi bi-person-fill"></i></span>` 
-                    : `<span class="chat-avatar-icon"><i class="bi bi-person-fill"></i></span>`;
+                    ? `<img src="../uploads/profile/${msg.img_name}" alt="" class="chat-avatar">` 
+                    : `<span class="chat-avatar-icon ${iconClass}"><i class="bi bi-person-fill"></i></span>`;
 
                 let contentHTML = '';
 

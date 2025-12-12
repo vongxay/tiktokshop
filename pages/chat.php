@@ -40,6 +40,8 @@ $receiver_id = $_GET['user'];
     // ✅ ดึง user id จาก URL
     const urlParams = new URLSearchParams(window.location.search);
     const chatPartnerId = urlParams.get('user');
+    let lastMessageCount = 0;
+    let lastMessageId = 0;
 
     function loadMessages() {
         if (!chatPartnerId) {
@@ -55,6 +57,14 @@ $receiver_id = $_GET['user'];
         fetch(`get_messages.php?user=${chatPartnerId}`)
             .then(response => response.json())
             .then(data => {
+                // ตรวจสอบว่ามีข้อความใหม่หรือไม่
+                const newLastId = data.length > 0 ? data[data.length - 1].id : 0;
+                if (data.length === lastMessageCount && newLastId === lastMessageId) {
+                    return; // ไม่มีอะไรเปลี่ยน ไม่ต้อง render ใหม่
+                }
+                lastMessageCount = data.length;
+                lastMessageId = newLastId;
+
                 const currentScrollHeight = messagesContainer.scrollHeight;
                 messagesContainer.innerHTML = '';
 
@@ -62,11 +72,13 @@ $receiver_id = $_GET['user'];
                     const messageDiv = document.createElement('div');
                     messageDiv.className = 'message ' + (msg.sender_id == userId ? 'me' : 'other');
 
-                    // แสดงไอคอนคนถ้าไม่มีรูปโปรไฟล์
+                    // แสดงไอคอนคนถ้าไม่มีรูปโปรไฟล์ (สีต่างกันระหว่าง admin และ user)
                     const hasAvatar = msg.img_name && msg.img_name.trim() !== '' && msg.img_name !== 'null';
+                    const isAdmin = msg.sender_id != userId; // ถ้าไม่ใช่เรา คือ admin
+                    const iconClass = isAdmin ? 'admin' : 'user';
                     const avatarHTML = hasAvatar 
-                        ? `<img src="uploads/profile/${msg.img_name}" alt="" class="chat-avatar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="chat-avatar-icon" style="display:none"><i class="bi bi-person-fill"></i></div>` 
-                        : `<div class="chat-avatar-icon"><i class="bi bi-person-fill"></i></div>`;
+                        ? `<img src="uploads/profile/${msg.img_name}" alt="" class="chat-avatar">` 
+                        : `<div class="chat-avatar-icon ${iconClass}"><i class="bi bi-person-fill"></i></div>`;
 
                     const profileHTML = `
                         <div class="chat-header">
@@ -406,6 +418,16 @@ $receiver_id = $_GET['user'];
         font-size: 18px;
         border: 2px solid #fff;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ไอคอน Admin - สีแดง/ส้ม */
+    .chat-avatar-icon.admin {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    }
+
+    /* ไอคอน User - สีม่วง */
+    .chat-avatar-icon.user {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
     
     .chat-avatar-icon i {
